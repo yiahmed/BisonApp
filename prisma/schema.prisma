@@ -2,7 +2,6 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 // Latest about migrations: https://www.prisma.io/blog/prisma-migrate-ga-b5eno5g08d0b
 
-
 generator prisma_client {
   provider = "prisma-client-js"
 }
