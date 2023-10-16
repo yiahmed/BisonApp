@@ -1,0 +1,6 @@
+{
+  "baseUrl": "http://localhost:3001",
+  "integrationFolder": "tests/e2e",
+  "fixturesFolder": false,
+  "ignoreTestFiles": ["tsconfig.json"]
+}
