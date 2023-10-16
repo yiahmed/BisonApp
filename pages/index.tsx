@@ -11,7 +11,9 @@ function Home() {
       </Head>
 
       <Center>
-        <Heading size="lg">I am home page!</Heading>
+        <Heading size="lg" color="red.500">
+          Practice Bison App
+        </Heading>
       </Center>
     </>
   );
