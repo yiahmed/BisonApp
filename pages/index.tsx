@@ -15,6 +15,7 @@ function Home() {
           Practice Bison App
         </Heading>
       </Center>
+      <div className="bg-red-500">Example Text</div>
     </>
   );
 }
