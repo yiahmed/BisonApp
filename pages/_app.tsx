@@ -1,10 +1,10 @@
 import React from 'react';
+import 'css/global.css';
 import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 
 import { AllProviders } from '@/components/AllProviders';
 import { useAuth } from '@/context/auth';
-import 'css/global.css';
 
 /**
  * Dynamically load layouts. This codesplits and prevents code from the logged in layout from being

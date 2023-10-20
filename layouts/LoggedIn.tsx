@@ -5,7 +5,7 @@ import { Box, Flex, Button } from '@chakra-ui/react';
 import { Logo } from '@/components/Logo';
 import { Nav } from '@/components/Nav';
 import { useAuth } from '@/context/auth';
-import { Footer } from '@/components/Footer';
+// import { Footer } from '@/components/Footer';
 
 interface Props {
   children: React.ReactNode;
@@ -44,7 +44,7 @@ export function LoggedInLayout({ children }: Props) {
         {children}
       </Box>
 
-      <Footer />
+      {/* <Footer /> */}
     </Flex>
   );
 }
