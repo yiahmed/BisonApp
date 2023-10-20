@@ -1,22 +1,28 @@
 import React from 'react';
 import Head from 'next/head';
-import { Heading, Center } from '@chakra-ui/react';
+
+import SongLibrary from '@/components/Sidebar/SongLibrary';
+import Sidebar from '@/components/Sidebar/Sidebar';
+
+// import Sidebar from '@/components/Sidebar/Sidebar';
 
 function Home() {
   return (
-    <>
-      <Head>
-        <title>Home</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <div className="w-full h-screen bg-black  ">
+      <div className="h-full">
+        <Head>
+          <title>Home</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
 
-      <Center>
-        <Heading size="lg" color="red.500">
-          Practice Bison App
-        </Heading>
-      </Center>
-      <div className="bg-red-500">Example Text</div>
-    </>
+        <div className="flex h-full ">
+          <div className="flex-col hidden h-full bg-black md:flex gap-y-2 w-[300px] p-2">
+            <Sidebar />
+            <SongLibrary />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

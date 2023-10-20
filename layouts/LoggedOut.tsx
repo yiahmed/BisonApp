@@ -3,7 +3,7 @@ import { Box, Flex } from '@chakra-ui/react';
 
 import { ButtonLink } from '@/components/Link';
 import { Logo } from '@/components/Logo';
-import { Footer } from '@/components/Footer';
+// import { Footer } from '@/components/Footer';
 
 interface Props {
   children: React.ReactNode;
@@ -26,7 +26,7 @@ export function LoggedOutLayout({ children }: Props) {
         {children}
       </Box>
 
-      <Footer />
+      {/* <Footer /> */}
     </Flex>
   );
 }
