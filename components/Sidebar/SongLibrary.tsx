@@ -25,7 +25,7 @@ const SongLibrary: React.FC = () => {
             className="transition cursor-pointer text-neutral-400 hover:text-white"
           />
         </div>
-        <div className="flex flex-col px-3 mt-4 gap-y-2">List of Songs!</div>
+        <div className="flex flex-col px-3 mt-4 text-white gap-y-2">List of Songs!</div>
       </div>
     </Box>
   );

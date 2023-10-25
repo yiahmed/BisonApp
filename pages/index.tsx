@@ -3,6 +3,7 @@ import Head from 'next/head';
 
 import SongLibrary from '@/components/Sidebar/SongLibrary';
 import Sidebar from '@/components/Sidebar/Sidebar';
+import MainContent from '@/components/Main/MainContent';
 
 // import Sidebar from '@/components/Sidebar/Sidebar';
 
@@ -19,7 +20,9 @@ function Home() {
           <Sidebar />
           <SongLibrary />
         </div>
-        <main className="flex-1 h-full py-2 overflow-y-auto text-green-400">Main content</main>
+        <main className="flex-1 h-full py-2 overflow-y-auto">
+          <MainContent />
+        </main>
       </div>
     </div>
   );
