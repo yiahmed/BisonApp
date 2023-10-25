@@ -8,19 +8,18 @@ import Sidebar from '@/components/Sidebar/Sidebar';
 
 function Home() {
   return (
-    <div className="w-full h-screen bg-black  ">
-      <div className="h-full">
+    <div className="w-full h-screen bg-black">
+      <div className="flex h-full">
         <Head>
           <title>Home</title>
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <div className="flex h-full ">
-          <div className="flex-col hidden h-full bg-black md:flex gap-y-2 w-[300px] p-2">
-            <Sidebar />
-            <SongLibrary />
-          </div>
+        <div className="flex-col hidden h-full bg-black md:flex gap-y-2 w-[300px] p-2">
+          <Sidebar />
+          <SongLibrary />
         </div>
+        <main className="flex-1 h-full py-2 overflow-y-auto text-green-400">Main content</main>
       </div>
     </div>
   );
