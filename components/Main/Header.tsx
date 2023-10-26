@@ -5,6 +5,10 @@ import { twMerge } from 'tailwind-merge';
 import { RxCaretLeft, RxCaretRight } from 'react-icons/rx';
 import { HiHome } from 'react-icons/hi';
 import { BiSearch } from 'react-icons/bi';
+
+import SignUpButton from './SignUpButton';
+import LoginButton from './LoginButton';
+import HeaderContent from './HeaderContent';
 type Props = {};
 
 const Header = (props: Props) => {
@@ -27,7 +31,7 @@ const Header = (props: Props) => {
             <RxCaretRight size={35} className="text-white" />
           </button>
         </div>
-        <div className="flex items-center md-hidden gap-x-2">
+        <div className="flex items-center md:hidden gap-x-2">
           <button className="flex items-center justify-center p-2 transition bg-white rounded-full hover:opacity-75">
             <HiHome size={20} className="text-black" />
           </button>
@@ -35,6 +39,19 @@ const Header = (props: Props) => {
             <BiSearch size={20} className="text-black" />
           </button>
         </div>
+        <div className="flex items-center justify-between gap-x-4">
+          <>
+            <div>
+              <SignUpButton />
+            </div>
+            <div>
+              <LoginButton />
+            </div>
+          </>
+        </div>
+      </div>
+      <div>
+        <HeaderContent />
       </div>
     </div>
   );
