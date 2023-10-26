@@ -47,3 +47,6 @@ cypress/logs*
 /api.graphql
 /types.ts
 /types/nexus.d.ts
+
+# password Supabase
+password.txt
