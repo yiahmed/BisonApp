@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import { AllProviders } from '@/components/AllProviders';
 import { useAuth } from '@/context/auth';
 import SupabaseProvider from '@/providers/SupabaseProvider';
+import UserProvider from '@/providers/UserProvider';
 
 /**
  * Dynamically load layouts. This codesplits and prevents code from the logged in layout from being
@@ -37,7 +38,9 @@ function App({ pageProps, Component }: AppProps) {
     <AllProviders>
       <AppWithAuth>
         <SupabaseProvider>
-          <Component {...pageProps} />
+          <UserProvider>
+            <Component {...pageProps} />
+          </UserProvider>
         </SupabaseProvider>
       </AppWithAuth>
     </AllProviders>
