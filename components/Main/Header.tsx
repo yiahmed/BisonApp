@@ -5,14 +5,32 @@ import { twMerge } from 'tailwind-merge';
 import { RxCaretLeft, RxCaretRight } from 'react-icons/rx';
 import { HiHome } from 'react-icons/hi';
 import { BiSearch } from 'react-icons/bi';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { Button } from '@chakra-ui/react';
+import { FaUserAlt } from 'react-icons/fa';
 
 import SignUpButton from './SignUpButton';
 import LoginButton from './LoginButton';
 import HeaderContent from './HeaderContent';
+
+import { useUser } from '@/hooks/useUser';
+import useAuthModal from '@/hooks/useAuthModal';
 type Props = {};
 
 const Header = (props: Props) => {
+  const authModal = useAuthModal();
   const router = useRouter();
+  const supabaseClient = useSupabaseClient();
+  const { user } = useUser();
+
+  const handleLogout = async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    router.replace(router.pathname);
+
+    if (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={twMerge(`h-fit bg-gradient-to-b from-emerald-800 p-6`)}>
@@ -40,14 +58,41 @@ const Header = (props: Props) => {
           </button>
         </div>
         <div className="flex items-center justify-between gap-x-4">
-          <>
-            <div>
-              <SignUpButton />
+          {user ? (
+            <div className="flex gap-x-4 items-center">
+              <Button
+                w="100%" // Width
+                px={6} // Padding X-axis
+                py={2} // Padding Y-axis
+                fontWeight="bold" // Font weight
+                color="black" // Text color
+                transition="background-color 0.2s, opacity 0.2s" // Transition properties
+                bg="white" // Background color
+                borderWidth="1px" // Border width
+                borderColor="transparent" // Border color
+                borderRadius="full" // Rounded corners
+                _disabled={{ cursor: 'not-allowed', opacity: '0.5' }} // Disabled state styles
+                _hover={{ opacity: '0.75' }} // Hover state styles
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+              <button onClick={() => router.push('/account')}>
+                <div className=" flex items-center justify-center p-4  bg-white rounded-full drop-shadow-md right-5 hover:scale-110 ">
+                  <FaUserAlt />
+                </div>
+              </button>
             </div>
-            <div>
-              <LoginButton />
-            </div>
-          </>
+          ) : (
+            <>
+              <div>
+                <SignUpButton />
+              </div>
+              <div>
+                <LoginButton />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <div>
