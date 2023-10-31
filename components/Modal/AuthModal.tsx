@@ -19,7 +19,7 @@ const AuthModal = () => {
 
   useEffect(() => {
     if (session) {
-      router.push(router.pathname);
+      router.replace(router.pathname);
       onClose();
     }
   }, [session, router, onClose]);
