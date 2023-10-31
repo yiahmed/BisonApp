@@ -54,8 +54,11 @@
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
     "@prisma/client": "^3.1.1",
+    "@radix-ui/react-dialog": "^1.0.5",
     "@supabase/auth-helpers-nextjs": "^0.8.2",
     "@supabase/auth-helpers-react": "^0.4.2",
+    "@supabase/auth-ui-react": "^0.4.6",
+    "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.38.4",
     "apollo-server-micro": "^3.6.7",
     "autoprefixer": "^10.4.16",
@@ -76,7 +79,8 @@
     "react-icons": "^4.11.0",
     "stripe": "^14.2.0",
     "tailwind-merge": "^1.14.0",
-    "universal-cookie": "^4.0.4"
+    "universal-cookie": "^4.0.4",
+    "zustand": "^4.4.4"
   },
   "devDependencies": {
     "@apollo/react-testing": "^4.0.0",
