@@ -8,6 +8,7 @@ import { BiSearch } from 'react-icons/bi';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Button } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 import SignUpButton from './SignUpButton';
 import LoginButton from './LoginButton';
@@ -28,7 +29,9 @@ const Header = (props: Props) => {
     router.replace(router.pathname);
 
     if (error) {
-      console.log(error);
+      toast.error(error.message);
+    } else {
+      toast.success('Logged out!');
     }
   };
 
@@ -59,7 +62,7 @@ const Header = (props: Props) => {
         </div>
         <div className="flex items-center justify-between gap-x-4">
           {user ? (
-            <div className="flex gap-x-4 items-center">
+            <div className="flex items-center gap-x-4">
               <Button
                 w="100%" // Width
                 px={6} // Padding X-axis
@@ -78,7 +81,7 @@ const Header = (props: Props) => {
                 Logout
               </Button>
               <button onClick={() => router.push('/account')}>
-                <div className=" flex items-center justify-center p-4  bg-white rounded-full drop-shadow-md right-5 hover:scale-110 ">
+                <div className="flex items-center justify-center p-4 bg-white rounded-full  drop-shadow-md right-5 hover:scale-110">
                   <FaUserAlt />
                 </div>
               </button>

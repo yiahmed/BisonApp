@@ -5,11 +5,23 @@ import { Box } from '@chakra-ui/react';
 import { TbPlaylist } from 'react-icons/tb';
 import { AiOutlinePlus } from 'react-icons/ai';
 
+import useAuthModal from '@/hooks/useAuthModal';
+import { useUser } from '@/hooks/useUser';
+import useUploadModal from '@/hooks/useUploadModal';
+
 const SongLibrary: React.FC = () => {
   const router = useRouter();
+  const authModal = useAuthModal();
+  const uploadModal = useUploadModal();
+  const user = useUser();
 
   const onClick = () => {
-    // handle upload later
+    if (!user) {
+      return authModal.onOpen();
+    }
+
+    // TODO: Check for subscription
+    return uploadModal.onOpen();
   };
 
   return (
@@ -21,6 +33,7 @@ const SongLibrary: React.FC = () => {
             <p className="text-base font-medium text-neutral-400">Your Library</p>
           </div>
           <AiOutlinePlus
+            onClick={onClick}
             size={20}
             className="transition cursor-pointer text-neutral-400 hover:text-white"
           />

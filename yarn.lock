@@ -3941,6 +3941,11 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/uniqid@^5.3.3":
+  version "5.3.3"
+  resolved "https://registry.npmjs.org/@types/uniqid/-/uniqid-5.3.3.tgz"
+  integrity sha512-K0ZC3LPd8hy2CC26KfUkXEBmJt4hTQokroqcygADKgsgar8SyYuPOzGehmaRrhMrB/KDZKWzdQyoTqRX7eCuZg==
+
 "@types/websocket@^1.0.3":
   version "1.0.8"
   resolved "https://registry.npmjs.org/@types/websocket/-/websocket-1.0.8.tgz"
@@ -7105,6 +7110,11 @@ globby@^11.0.3, globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
+goober@^2.1.10:
+  version "2.1.13"
+  resolved "https://registry.npmjs.org/goober/-/goober-2.1.13.tgz"
+  integrity sha512-jFj3BQeleOoy7t93E9rZ2de+ScC4lQICLwiAQmKMg9F6roKGaLSHoCDYKkWlSafg138jejvq/mTdvmnwDQgqoQ==
+
 gopd@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/gopd/-/gopd-1.0.1.tgz"
@@ -9955,10 +9965,17 @@ react-focus-lock@^2.9.4:
     use-callback-ref "^1.3.0"
     use-sidecar "^1.1.2"
 
-react-hook-form@^7.30.0:
+react-hook-form@^7.47.0:
   version "7.47.0"
   resolved "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.47.0.tgz"
   integrity sha512-F/TroLjTICipmHeFlMrLtNLceO2xr1jU3CyiNla5zdwsGUGu2UOxxR4UyJgLlhMwLW/Wzp4cpJ7CPfgJIeKdSg==
+
+react-hot-toast@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.npmjs.org/react-hot-toast/-/react-hot-toast-2.4.1.tgz"
+  integrity sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==
+  dependencies:
+    goober "^2.1.10"
 
 react-icons@^4.11.0:
   version "4.11.0"
@@ -11408,6 +11425,11 @@ unicode-property-aliases-ecmascript@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/unicode-property-aliases-ecmascript/-/unicode-property-aliases-ecmascript-2.1.0.tgz"
   integrity sha512-6t3foTQI9qne+OZoVQB/8x8rk2k1eVy1gRXhV3oFQ5T6R1dqQ1xtin3XqSlx3+ATBkliTaR/hHyJBm+LVPNM8w==
+
+uniqid@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.npmjs.org/uniqid/-/uniqid-5.4.0.tgz"
+  integrity sha512-38JRbJ4Fj94VmnC7G/J/5n5SC7Ab46OM5iNtSstB/ko3l1b5g7ALt4qzHFgGciFkyiRNtDXtLNb+VsxtMSE77A==
 
 universal-cookie@^4.0.4:
   version "4.0.4"
