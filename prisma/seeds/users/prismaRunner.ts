@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 
 import { prisma } from '@/lib/prisma';
-import { User } from '@/typesgql';
+import { User } from '@/types';
 
 type SeedUserResult = Pick<User, 'id' | 'email'>;
 

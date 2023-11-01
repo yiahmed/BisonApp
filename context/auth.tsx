@@ -2,7 +2,7 @@ import React, { createContext, useContext, ReactNode, useState, useEffect } from
 import { gql } from '@apollo/client';
 
 import { cookies } from '@/lib/cookies';
-import { useMeLazyQuery, User } from '@/typesgql';
+import { useMeLazyQuery, User } from '@/types';
 import { FullPageSpinner } from '@/components/FullPageSpinner';
 import { LOGIN_TOKEN_KEY } from '@/constants';
 

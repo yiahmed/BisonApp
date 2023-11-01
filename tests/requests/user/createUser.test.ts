@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql';
 
 import { resetDB, disconnect, graphQLRequestAsUser } from '@/tests/helpers';
 import { UserFactory } from '@/tests/factories/user';
-import { Role, UserCreateInput } from '@/typesgql';
+import { Role, UserCreateInput } from '@/types';
 
 beforeEach(async () => resetDB());
 afterAll(async () => disconnect());

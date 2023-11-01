@@ -2,7 +2,7 @@ import { GraphQLError } from 'graphql';
 
 import { graphQLRequest, resetDB, disconnect } from '@/tests/helpers';
 import { UserFactory } from '@/tests/factories/user';
-import { LoginMutationVariables } from '@/typesgql';
+import { LoginMutationVariables } from '@/types';
 
 beforeEach(async () => resetDB());
 afterAll(async () => disconnect());

@@ -9,7 +9,7 @@ import { useAuth } from '@/context/auth';
 import { ErrorText } from '@/components/ErrorText';
 import { Link } from '@/components/Link';
 import { setErrorsFromGraphQLErrors } from '@/utils/setErrors';
-import { LoginMutationVariables, useLoginMutation } from '@/typesgql';
+import { LoginMutationVariables, useLoginMutation } from '@/types';
 
 export const LOGIN_MUTATION = gql`
   mutation login($email: String!, $password: String!) {
