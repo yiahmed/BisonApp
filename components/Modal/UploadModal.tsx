@@ -148,7 +148,13 @@ const UploadModal = () => {
             {...register('image', { required: true })}
           />
         </div>
-        <Button disabled={isLoading} type="submit">
+        <Button
+          disabled={isLoading}
+          type="submit"
+          borderRadius="full"
+          bg={'green.400'}
+          _hover={{ opacity: '0.75' }}
+        >
           Create
         </Button>
       </form>
