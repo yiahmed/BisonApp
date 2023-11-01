@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 import { useAuth } from '@/context/auth';
 import { setErrorsFromGraphQLErrors } from '@/utils/setErrors';
-import { SignupMutationVariables, useSignupMutation } from '@/types';
+import { SignupMutationVariables, useSignupMutation } from '@/typesgql';
 import { EMAIL_REGEX } from '@/constants';
 import { Link } from '@/components/Link';
 import { ErrorText } from '@/components/ErrorText';

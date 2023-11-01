@@ -3,7 +3,7 @@ import { GraphQLError } from 'graphql';
 
 import { graphQLRequest, graphQLRequestAsUser, resetDB, disconnect } from '@/tests/helpers';
 import { UserFactory } from '@/tests/factories/user';
-import { User, UserWhereUniqueInput } from '@/types';
+import { User, UserWhereUniqueInput } from '@/typesgql';
 
 beforeEach(async () => resetDB());
 afterAll(async () => disconnect());
