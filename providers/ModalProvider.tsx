@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import Modal from '@/components/Modal/Modal';
 import AuthModal from '@/components/Modal/AuthModal';
+import UploadModal from '@/components/Modal/UploadModal';
 
 type Props = {};
 
@@ -16,7 +17,12 @@ const ModalProvider = (props: Props) => {
     return null;
   }
 
-  return <AuthModal />;
+  return (
+    <>
+      <AuthModal />
+      <UploadModal />
+    </>
+  );
 };
 
 export default ModalProvider;

@@ -8,6 +8,7 @@ import { useAuth } from '@/context/auth';
 import SupabaseProvider from '@/providers/SupabaseProvider';
 import UserProvider from '@/providers/UserProvider';
 import ModalProvider from '@/providers/ModalProvider';
+import ToasterProvider from '@/providers/ToasterProvider';
 
 /**
  * Dynamically load layouts. This codesplits and prevents code from the logged in layout from being
@@ -36,16 +37,19 @@ function AppWithAuth({ children }: { children: React.ReactNode }) {
 
 function App({ pageProps, Component }: AppProps) {
   return (
-    <SupabaseProvider>
-      <AllProviders>
-        {/* <AppWithAuth> */}
-        <UserProvider>
-          <ModalProvider />
-          <Component {...pageProps} />
-        </UserProvider>
-        {/* </AppWithAuth> */}
-      </AllProviders>
-    </SupabaseProvider>
+    <>
+      <ToasterProvider />
+      <SupabaseProvider>
+        <AllProviders>
+          {/* <AppWithAuth> */}
+          <UserProvider>
+            <ModalProvider />
+            <Component {...pageProps} />
+          </UserProvider>
+          {/* </AppWithAuth> */}
+        </AllProviders>
+      </SupabaseProvider>
+    </>
   );
 }
 
