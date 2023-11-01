@@ -16,9 +16,8 @@ import HeaderContent from './HeaderContent';
 
 import { useUser } from '@/hooks/useUser';
 import useAuthModal from '@/hooks/useAuthModal';
-type Props = {};
 
-const Header = (props: Props) => {
+const Header = () => {
   const authModal = useAuthModal();
   const router = useRouter();
   const supabaseClient = useSupabaseClient();
@@ -81,7 +80,7 @@ const Header = (props: Props) => {
                 Logout
               </Button>
               <button onClick={() => router.push('/account')}>
-                <div className="flex items-center justify-center p-4 bg-white rounded-full  drop-shadow-md right-5 hover:scale-110">
+                <div className="flex items-center justify-center p-4 bg-white rounded-full drop-shadow-md right-5 hover:scale-110">
                   <FaUserAlt />
                 </div>
               </button>
