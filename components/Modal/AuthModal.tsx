@@ -5,6 +5,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
+import Cookies from 'universal-cookie';
 
 import Modal from './Modal';
 
@@ -14,13 +15,19 @@ const AuthModal = () => {
   const { session } = useSessionContext();
   const router = useRouter();
   const { onClose, isOpen } = useAuthModal();
+  const cookies = new Cookies();
 
   const supabaseClient = useSupabaseClient();
 
   useEffect(() => {
     if (session) {
+      cookies.set('sessionData', session, { path: '/' });
       router.push(router.pathname);
       onClose();
+
+      // Log cookies data
+      const cookiesData = cookies.get('sessionData');
+      console.log('Cookies data:', cookiesData);
     }
   }, [session, router, onClose]);
 
