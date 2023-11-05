@@ -4,10 +4,27 @@ import Head from 'next/head';
 import SongLibrary from '@/components/Sidebar/SongLibrary';
 import Sidebar from '@/components/Sidebar/Sidebar';
 import MainContent from '@/components/Main/MainContent';
+import getSongs from '@/actions/getSongs';
+import getSongsByUserId from '@/actions/getSongsByUserId';
 
-// import Sidebar from '@/components/Sidebar/Sidebar';
+export const getServerSideProps = async () => {
+  // Fetch songs data asynchronously
+  const songs = await getSongs();
+  const userSongs = await getSongsByUserId();
 
-function Home() {
+  // Pass songs as props to the component
+  return {
+    props: {
+      songs,
+      userSongs,
+    },
+  };
+};
+
+function Home({ songs, userSongs }) {
+  // console.log('songs', songs);
+  // console.log('userSongs', userSongs);
+
   return (
     <div className="w-full h-screen bg-black">
       <div className="flex h-full">
@@ -17,11 +34,11 @@ function Home() {
         </Head>
 
         <div className="flex-col hidden h-full bg-black md:flex gap-y-2 w-[300px] p-2">
-          <Sidebar />
-          <SongLibrary />
+          <Sidebar userSongs={userSongs} />
+          <SongLibrary songs={songs} />
         </div>
         <main className="flex-1 h-full py-2 overflow-y-auto">
-          <MainContent />
+          <MainContent songs={songs} />
         </main>
       </div>
     </div>

@@ -6,6 +6,11 @@ import { twMerge } from 'tailwind-merge';
 import { Box } from '@chakra-ui/react';
 import Link from 'next/link';
 
+import { Song } from '@/projectTypes';
+
+interface SidebarProps {
+  userSongs: Song[];
+}
 interface SidebarItem {
   label: string;
   href: string;
@@ -13,7 +18,7 @@ interface SidebarItem {
   active?: boolean;
 }
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<SidebarProps> = ({ userSongs }) => {
   const router = useRouter();
 
   const sidebarItems: SidebarItem[] = [

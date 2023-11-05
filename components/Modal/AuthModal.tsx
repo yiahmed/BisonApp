@@ -19,10 +19,12 @@ const AuthModal = () => {
 
   useEffect(() => {
     if (session) {
-      router.replace(router.pathname);
+      router.push(router.pathname);
       onClose();
     }
   }, [session, router, onClose]);
+
+  console.log('session check', session);
 
   const onChange = (open: boolean) => {
     if (!open) {
