@@ -14,6 +14,9 @@ interface MediaItemProps {
 const MediaItem: React.FC<MediaItemProps> = ({ data, onClick }) => {
   const player = usePlayer();
   const imageUrl = useLoadImage(data);
+  console.log('Data song', data);
+  // const encodedUrl = encodeURIComponent(imageUrl);
+  console.log('Imgae url test', imageUrl);
 
   const handleClick = () => {
     if (onClick) {
