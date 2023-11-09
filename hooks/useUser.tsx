@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext, useContext } from 'react';
+import { useState, useEffect, createContext, useContext } from 'react';
 import { useUser as useSupaUser, useSessionContext, User } from '@supabase/auth-helpers-react';
 
 import { UserDetails, Subscription } from '@/projectTypes';
@@ -9,6 +9,7 @@ type UserContextType = {
   userDetails: UserDetails | null;
   isLoading: boolean;
   subscription: Subscription | null;
+  setSupaUser: React.Dispatch<React.SetStateAction<User | null>>; // Updated: Add setUser to the context
 };
 
 export const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -19,9 +20,9 @@ export interface Props {
 
 export const MyUserContextProvider = (props: Props) => {
   const { session, isLoading: isLoadingUser, supabaseClient: supabase } = useSessionContext();
+  const user = useSupaUser(); // Updated: Get the user using useSupaUser
 
-  const user = useSupaUser();
-  const accessToken = session?.access_token ?? null;
+  const [supaUser, setSupaUser] = useState(user); // Initialize user state with supaUser
   const [isLoadingData, setIsloadingData] = useState(false);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
@@ -36,7 +37,7 @@ export const MyUserContextProvider = (props: Props) => {
       .single();
 
   useEffect(() => {
-    if (user && !isLoadingData && !userDetails && !subscription) {
+    if (supaUser && !isLoadingData && !userDetails && !subscription) {
       setIsloadingData(true);
       Promise.allSettled([getUserDetails(), getSubscription()]).then((results) => {
         const userDetailsPromise = results[0];
@@ -50,18 +51,19 @@ export const MyUserContextProvider = (props: Props) => {
 
         setIsloadingData(false);
       });
-    } else if (!user && !isLoadingUser && !isLoadingData) {
+    } else if (!supaUser && !isLoadingUser && !isLoadingData) {
       setUserDetails(null);
       setSubscription(null);
     }
   }, [user, isLoadingUser]);
 
-  const value = {
-    accessToken,
+  const value: UserContextType = {
+    accessToken: session?.access_token ?? null,
     user,
     userDetails,
     isLoading: isLoadingUser || isLoadingData,
     subscription,
+    setSupaUser, // Updated: Provide setUser in the context value
   };
 
   return <UserContext.Provider value={value} {...props} />;

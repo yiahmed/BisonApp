@@ -1,7 +1,6 @@
 'use client';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 import { RxCaretLeft, RxCaretRight } from 'react-icons/rx';
 import { HiHome } from 'react-icons/hi';
 import { BiSearch } from 'react-icons/bi';
@@ -9,33 +8,49 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Button } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import Cookies from 'universal-cookie';
 
 import SignUpButton from './SignUpButton';
 import LoginButton from './LoginButton';
-import HeaderContent from './HeaderContent';
 
 import { useUser } from '@/hooks/useUser';
-import useAuthModal from '@/hooks/useAuthModal';
 
 const Header = () => {
-  const authModal = useAuthModal();
   const router = useRouter();
   const supabaseClient = useSupabaseClient();
-  const { user } = useUser();
+  const { user, setSupaUser } = useUser();
+  console.log('User here', user);
 
   const handleLogout = async () => {
-    const { error } = await supabaseClient.auth.signOut();
-    router.replace(router.pathname);
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      setSupaUser(null);
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success('Logged out!');
+      // Remove the 'sessionData' cookie
+      const cookies = new Cookies();
+      cookies.remove('sessionData', { path: '/' }); // Remove the cookie with the specified name and path
+
+      console.log('Error during logout:', error); // Log the error (will be null if logout was successful)
+
+      // Log cookies data after removal
+      const cookiesData = cookies.get('sessionData');
+      console.log('Cookies data after removal:', cookiesData);
+
+      router.replace(router.pathname);
+
+      if (error) {
+        toast.error(error.message);
+      } else {
+        toast.success('Logged out!');
+      }
+    } catch (error) {
+      console.error('An error occurred during logout:', error);
+      toast.error('An error occurred during logout. Please try again.');
     }
   };
 
   return (
-    <div className={twMerge(`h-fit bg-gradient-to-b from-emerald-800 p-6`)}>
+    <>
       <div className="flex items-center justify-between w-full mb-4">
         <div className="items-center hidden md:flex gap-x-2">
           <button
@@ -97,10 +112,7 @@ const Header = () => {
           )}
         </div>
       </div>
-      <div>
-        <HeaderContent />
-      </div>
-    </div>
+    </>
   );
 };
 

@@ -23,9 +23,18 @@ const MediaItem: React.FC<MediaItemProps> = ({ data, onClick }) => {
     return player.setId(data.id);
   };
 
+  // console.log('image url', imageUrl);
+
   return (
     <div
       onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === 'Space') {
+          handleClick();
+        }
+      }}
+      role="button" // Add role="button" for accessibility
+      tabIndex={0} // Add tabIndex={0} to make it focusable
       className="flex items-center w-full p-2 rounded-md cursor-pointer gap-x-3 hover:bg-neutral-800/50"
     >
       <div
