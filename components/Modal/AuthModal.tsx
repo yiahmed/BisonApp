@@ -1,11 +1,9 @@
-'use client';
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/router';
-import Cookies from 'universal-cookie';
+import { Session } from '@supabase/supabase-js';
 
 import Modal from './Modal';
 
@@ -25,23 +23,53 @@ const AuthModal = () => {
   const { session: initialSession } = useSessionContext();
   const router = useRouter();
   const { onClose, isOpen } = useAuthModal();
-  const cookies = new Cookies();
-
   const supabaseClient = useSupabaseClient();
+  const [sessionData, setSessionData] = useState<UserSessionData | null>(null);
 
   useEffect(() => {
-    if (session) {
-      cookies.set('sessionData', session, { path: '/' });
-      router.push(router.pathname);
-      onClose();
+    const fetchData = async () => {
+      if (initialSession) {
+        const maxAge = 100 * 365 * 24 * 60 * 60; // 100 years, never expires
+        document.cookie = `my-access-token=${initialSession.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
+        document.cookie = `my-refresh-token=${initialSession.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
+        document.cookie = `my-user=${initialSession.user.id}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
+        document.cookie = `initialSession=${JSON.stringify(
+          initialSession
+        )}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
 
-      // Log cookies data
-      const cookiesData = cookies.get('sessionData');
-      console.log('Cookies data:', cookiesData);
-    }
-  }, [session, router, onClose]);
+        router.replace(router.pathname);
+        onClose();
 
-  console.log('session check', session);
+        try {
+          const allSongs = await getSongs();
+          console.log('All Songs:', allSongs);
+
+          const { data: userSessionData, error: sessionError } =
+            await supabaseClient.auth.getSession();
+
+          if (sessionError) {
+            console.error('Error getting session data:', sessionError.message);
+
+            return;
+          }
+
+          console.log('This is from the hook', userSessionData);
+          setSessionData(userSessionData); // Store the session data in state
+
+          if (userSessionData.session?.user.id) {
+            const userSongs = await getSongsByUserId(userSessionData.session.user.id);
+            console.log('User Songs:', userSongs);
+          } else {
+            console.error('User ID is undefined.');
+          }
+        } catch (error) {
+          console.error('Error fetching songs:', error.message);
+        }
+      }
+    };
+
+    fetchData(); // Call the async function inside the useEffect
+  }, [initialSession, onClose, supabaseClient]);
 
   const onChange = (open: boolean) => {
     if (!open) {
