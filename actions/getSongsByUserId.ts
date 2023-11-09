@@ -1,5 +1,6 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import Cookies from 'universal-cookie';
+import cookie from 'js-cookie';
 
 import { Song } from '@/projectTypes';
 

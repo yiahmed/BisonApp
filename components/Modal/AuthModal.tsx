@@ -9,10 +9,20 @@ import Cookies from 'universal-cookie';
 
 import Modal from './Modal';
 
+import getSongs from '@/actions/getSongs';
+import getSongsByUserId from '@/actions/getSongsByUserId';
 import useAuthModal from '@/hooks/useAuthModal';
 
+type UserSessionData =
+  | {
+      session: Session;
+    }
+  | {
+      session: null;
+    };
+
 const AuthModal = () => {
-  const { session } = useSessionContext();
+  const { session: initialSession } = useSessionContext();
   const router = useRouter();
   const { onClose, isOpen } = useAuthModal();
   const cookies = new Cookies();

@@ -1,15 +1,20 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import Cookies from 'universal-cookie';
+import { useCookies } from 'react-cookie'; // Import useCookies hook from react-cookie
 
 import { Song } from '@/projectTypes';
 
-const cookies = new Cookies();
-
-const getCookies = () => cookies;
+const getCookies = () => {
+  const [cookies] = useCookies(['sessionToken']); // Use useCookies hook to get the sessionToken cookie
+  return cookies;
+};
 
 const getSongs = async (): Promise<Song[]> => {
+  const cookies = getCookies();
+
   const supabase = createServerComponentClient({
-    cookies: getCookies,
+    cookies: {
+      sessionToken: cookies.sessionToken,
+    },
   });
 
   const { data, error } = await supabase

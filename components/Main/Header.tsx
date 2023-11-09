@@ -1,18 +1,16 @@
-'use client';
-import { useRouter } from 'next/router';
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
 import { RxCaretLeft, RxCaretRight } from 'react-icons/rx';
 import { HiHome } from 'react-icons/hi';
 import { BiSearch } from 'react-icons/bi';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import { Button } from '@chakra-ui/react';
 import { FaUserAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/router';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { useCookies } from 'react-cookie'; // Import useCookies from react-cookie
 
 import SignUpButton from './SignUpButton';
 import LoginButton from './LoginButton';
-import HeaderContent from './HeaderContent';
 
 import { useUser } from '@/hooks/useUser';
 import useAuthModal from '@/hooks/useAuthModal';
@@ -21,21 +19,33 @@ const Header = () => {
   const authModal = useAuthModal();
   const router = useRouter();
   const supabaseClient = useSupabaseClient();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
+  const [cookies, setCookie, removeCookie] = useCookies(['sessionToken']); // Initialize sessionToken cookie
 
   const handleLogout = async () => {
+    // Sign out the user from Supabase
     const { error } = await supabaseClient.auth.signOut();
     router.replace(router.pathname);
+
+    // Clear the sessionToken cookie upon logout
+    removeCookie('sessionToken'); // Use removeCookie from react-cookie to remove the cookie
 
     if (error) {
       toast.error(error.message);
     } else {
       toast.success('Logged out!');
     }
+
+    // Log a message to the console after removing the cookie
+    console.log('SessionToken cookie removed:', cookies.sessionToken);
   };
 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className={twMerge(`h-fit bg-gradient-to-b from-emerald-800 p-6`)}>
+    <>
       <div className="flex items-center justify-between w-full mb-4">
         <div className="items-center hidden md:flex gap-x-2">
           <button
@@ -63,18 +73,18 @@ const Header = () => {
           {user ? (
             <div className="flex items-center gap-x-4">
               <Button
-                w="100%" // Width
-                px={6} // Padding X-axis
-                py={2} // Padding Y-axis
-                fontWeight="bold" // Font weight
-                color="black" // Text color
-                transition="background-color 0.2s, opacity 0.2s" // Transition properties
-                bg="white" // Background color
-                borderWidth="1px" // Border width
-                borderColor="transparent" // Border color
-                borderRadius="full" // Rounded corners
-                _disabled={{ cursor: 'not-allowed', opacity: '0.5' }} // Disabled state styles
-                _hover={{ opacity: '0.75' }} // Hover state styles
+                w="100%"
+                px={6}
+                py={2}
+                fontWeight="bold"
+                color="black"
+                transition="background-color 0.2s, opacity 0.2s"
+                bg="white"
+                borderWidth="1px"
+                borderColor="transparent"
+                borderRadius="full"
+                _disabled={{ cursor: 'not-allowed', opacity: '0.5' }}
+                _hover={{ opacity: '0.75' }}
                 onClick={handleLogout}
               >
                 Logout
@@ -97,10 +107,7 @@ const Header = () => {
           )}
         </div>
       </div>
-      <div>
-        <HeaderContent />
-      </div>
-    </div>
+    </>
   );
 };
 
