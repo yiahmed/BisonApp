@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import dynamic from 'next/dynamic';
 import { CookiesProvider } from 'react-cookie';
 
+import Player from '@/components/Player/Player';
 import { AllProviders } from '@/components/AllProviders';
 import { useAuth } from '@/context/auth';
 import SupabaseProvider from '@/providers/SupabaseProvider';
@@ -62,12 +63,11 @@ function App({ pageProps, Component }: AppProps) {
       <CookiesProvider>
         <SupabaseProvider>
           <AllProviders>
-            {/* <AppWithAuth> */}
             <UserProvider>
               <ModalProvider />
               <Component {...pageProps} songsByTitle={pageProps.songsByTitle} />
+              <Player />
             </UserProvider>
-            {/* </AppWithAuth> */}
           </AllProviders>
         </SupabaseProvider>
       </CookiesProvider>

@@ -36,7 +36,7 @@ const Header = () => {
       const cookiesData = cookies.get('sessionData');
       console.log('Cookies data after removal:', cookiesData);
 
-      router.replace(router.pathname);
+      router.replace('/');
 
       if (error) {
         toast.error(error.message);

@@ -1,21 +1,36 @@
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 import PlayButton from './PlayButton';
 
+import usePlayer from '@/hooks/usePlayer';
 import useLoadImage from '@/hooks/useLoadImage';
 import { Song } from '@/projectTypes';
 
 interface SongItemProps {
   data: Song;
   onClick: (id: string) => void;
+  setId: (id: string) => void; // Add setId prop
 }
 
-const SongItem: React.FC<SongItemProps> = ({ data, onClick }) => {
+const SongItem: React.FC<SongItemProps> = ({ data, onClick, setId, activeSongId }) => {
   const imagePath = useLoadImage(data);
+
+  const handleItemClick = () => {
+    console.log('Clicked on SongItem:', data);
+    setId(data.id); // Call setId with the clicked song's ID
+    onClick(data.id);
+  };
+
+  useEffect(() => {
+    if (activeSongId) {
+      setId(activeSongId); // Set the active song ID
+    }
+  }, [activeSongId, setId]);
 
   return (
     <div
-      onClick={() => onClick(data.id)}
+      onClick={handleItemClick}
       className="relative flex flex-col items-center justify-center p-3 overflow-hidden transition rounded-md cursor-pointer group gap-x-4 bg-neutral-400/5 hover:bg-neutral-400/10"
     >
       <div className="relative w-full h-full overflow-hidden rounded-md aspect-square">

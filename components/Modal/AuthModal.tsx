@@ -37,7 +37,7 @@ const AuthModal = () => {
           initialSession
         )}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
 
-        router.replace(router.pathname);
+        router.replace('/');
         onClose();
 
         try {

@@ -77,7 +77,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ songId }) => {
       }
     }
 
-    router.replace(router.pathname);
+    router.replace('/search');
   };
 
   return (

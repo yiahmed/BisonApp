@@ -94,7 +94,7 @@ const UploadModal = () => {
         return toast.error(supabaseError.message);
       }
 
-      router.replace(router.pathname);
+      router.replace('/');
       setIsLoading(false);
       toast.success('Song created!');
       reset();

@@ -10,6 +10,7 @@ import SearchContent from '@/components/Search/SearchContent';
 import getSongs from '@/actions/getSongs';
 import getSongsByUserId from '@/actions/getSongsByUserId';
 import { useUser } from '@/hooks/useUser';
+import Player from '@/components/Player/Player';
 
 type UserSessionData =
   | {
@@ -27,6 +28,8 @@ type Song = {
   song_path: string;
   image_path: string;
 };
+
+export const revalidate = 0;
 
 function Search() {
   const { isLoading, user } = useUser(); // Include a loading state in useUser hook
@@ -108,6 +111,7 @@ function Search() {
           </div>
         </div>
       </div>
+      {/* <Player /> */}
     </div>
   );
 }
