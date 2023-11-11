@@ -28,6 +28,8 @@ type Song = {
   image_path: string;
 };
 
+export const revalidate = 0;
+
 function Search() {
   const { isLoading, user } = useUser(); // Include a loading state in useUser hook
   const { session: initialSession } = useSessionContext();

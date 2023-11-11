@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useSessionContext, useSupabaseClient } from '@supabase/auth-helpers-react';
+import { twMerge } from 'tailwind-merge';
+import Image from 'next/image';
 
-import SongLibrary from '@/components/Sidebar/SongLibrary';
+import getLikedSongs from '@/actions/getLikedSongs';
 import Sidebar from '@/components/Sidebar/Sidebar';
-import MainContent from '@/components/Main/MainContent';
+import SongLibrary from '@/components/Sidebar/SongLibrary';
+import Header from '@/components/Main/Header';
 import getSongs from '@/actions/getSongs';
 import getSongsByUserId from '@/actions/getSongsByUserId';
-import getLikedSongs from '@/actions/getLikedSongs';
+import { useUser } from '@/hooks/useUser';
+import LikedContent from '@/components/Liked/LikedContent';
 
 type UserSessionData =
   | {
@@ -26,7 +30,10 @@ type Song = {
   image_path: string;
 };
 
-function Home({}) {
+export const revalidate = 0;
+
+function Liked() {
+  const { isLoading, user } = useUser(); // Include a loading state in useUser hook
   const { session: initialSession } = useSessionContext();
   const supabaseClient = useSupabaseClient();
   const [sessionData, setSessionData] = useState<UserSessionData | null>(null);
@@ -79,24 +86,51 @@ function Home({}) {
     fetchData(); // Call the async function inside the useEffect
   }, [initialSession, supabaseClient]);
 
+  if (isLoading) {
+    return <div className="text-white">Loading...</div>; // Show loading state while authentication state is being fetched
+  }
+
   return (
     <div className="w-full h-screen bg-black">
-      <div className="flex h-full">
-        <Head>
-          <title>Home</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+      <Head>
+        <title>Liked</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
+      <div className="flex h-full">
         <div className="flex-col hidden h-full bg-black md:flex gap-y-2 w-[300px] p-2">
+          {/* Sidebar and SongLibrary components */}
           <Sidebar userSongs={userSongs} />
           <SongLibrary songs={songs} />
         </div>
-        <main className="flex-1 h-full py-2 overflow-y-auto">
-          <MainContent songs={songs} />
-        </main>
+        <div className="w-full h-full mt-2 mb-4 overflow-hidden overflow-y-auto rounded-lg gap-y-2 bg-neutral-900">
+          <div
+            className={twMerge(
+              `h-2/5 sm:h-1/5 md:h-1/5 lg:h-2/5 bg-gradient-to-b from-emerald-800 p-6 mb-4`
+            )}
+          >
+            <Header />
+            <div className="flex mt-8">
+              <div className="relative w-32 h-32 lg:h-44 lg:w-44">
+                <Image
+                  className="object-cover"
+                  layout="fill"
+                  src="/images/liked.png"
+                  alt="Playlist"
+                />
+              </div>
+              <div className="flex flex-col pt-8 ml-4 text-white gap-y-2 md:mt-0">
+                <p className="hidden text-sm font-semibold md:block">Playlist</p>
+                <h1 className="text-4xl font-bold sm:text-5xl lg:text-7xl">Liked Songs</h1>
+              </div>
+            </div>
+          </div>
+
+          <LikedContent songs={likedSongs} />
+        </div>
       </div>
     </div>
   );
 }
 
-export default Home;
+export default Liked;
