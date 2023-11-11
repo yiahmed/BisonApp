@@ -1,588 +1,107 @@
-<p align="center" style="text-align:center">
-  <h1>MyApp</h1>
-  <p><img alt="CI STATUS" src="https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/main.js.yml/badge.svg"/></p>
-</p>
+# Spotify Clone
 
-# Getting Started Tutorial
-This checklist and mini-tutorial will make sure you make the most of your shiny new Bison app.
+This project is a Spotify clone built using the Full Stack Jamstack Bison app by Echobind.
 
-## Migrate your database, generate typings, and start the dev server
-- [ ] Run `yarn setup:dev` to prep and migrate your local database, as well as generate the prisma client, nexus typings, and GraphQL typings. If this fails, make sure you have Postgres running and the generated `DATABASE_URL` values are correct in your `.env` files.
-  -  For more information about code generation, view the [FAQ](https://github.com/echobind/bisonapp/blob/canary/docs/faq.md#where-can-i-find-the-generated-graphql-schema-react-hooks-and-typings).
-- [ ] Run `yarn dev` to start your development server
+## Technologies Used
 
-## Complete a Bison workflow
-While not a requirement, Bison works best when you start development with the database and API layer. We will illustrate how to use this by adding the concept of an organization to our app. The workflow below assumes you already have `yarn dev` running.
+- Next.js 12
+- React
+- TypeScript
+- Tailwind CSS
+- Chakra UI
+- Supabase
 
-### The Database
-Bison uses Prisma for database operations. We've added a few conveniences around the default Prisma setup, but if you're familiar with Prisma, you're familiar with databases in Bison.
+## Getting Started
 
-- [ ] Define an Organization table in `prisma/schema.prisma`.
+To run the project locally, follow these steps:
 
-We suggest copying the `id`, `createdAt` and `updatedAt` fields from the `User` model.
-```
-model Organization {
-  id        String   @id @default(cuid())
-  name      String
-  users     User[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+### Setup .env File
+
+Before running the project, you'll need to set up your `.env` file with the required environment variables. Copy the provided example below and fill in the appropriate values:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 ```
 
-If you use VSCode and have the [Prisma extension](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma) installed, saving the file should automatically add the inverse relationship to the `User` model!
+Setting Up Supabase
+To use the Spotify Clone, you'll need to set up a Supabase project to store songs, users, and liked songs. Follow these steps to configure your Supabase project:
 
-```
-model User {
-  id             String        @id @default(cuid())
-  email          String        @unique
-  password       String
-  roles          Role[]
-  profile        Profile?
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  organization   Organization? @relation(fields: [organizationId], references: [id])
-  organizationId String?
-}
-```
+Create a Supabase Project:
 
-- [ ] Generate a migration with `yarn g:migration`.
+Create a new Supabase project at Supabase Dashboard.
+Generate and save your Supabase project password securely.
+Create Tables:
 
-You should see a new folder in `prisma/migrations`.
-- [ ] Migrate the database with `yarn db:migrate`
+Create the following tables in your Supabase project using the SQL editor:
+Songs Table:
 
-For more on Prisma, [view the docs](https://www.prisma.io/docs/).
+CREATE TABLE songs (
+id SERIAL PRIMARY KEY,
+created_at TIMESTAMPTZ DEFAULT now(),
+title TEXT,
+song_path TEXT,
+image_path TEXT,
+author TEXT,
+user_id UUID REFERENCES users(id)
+);
 
-### The GraphQL API
-With the database changes complete, we need to decide what types, queries, and mutations to expose in our GraphQL API.
+Liked Songs Table:
 
-Bison uses [Nexus Schema](https://nexusjs.org/docs/) to create the GraphQL API. Nexus provides a strongly-typed, concise way of defining GraphQL types and operations.
+CREATE TABLE liked_songs (
+user_id UUID REFERENCES users(id),
+song_id INT8 REFERENCES songs(id),
+created_at TIMESTAMPTZ DEFAULT now()
+);
 
-- [ ] Create a new GraphQL module using `yarn g:graphql organization`
-- [ ] Edit the new module to reflect what you want to expose via the API. In the following Mutation example, we alias the Mutation name, require a user to be logged in, and force the new Organization to be owned by the logged in user. All in about 10 lines of code!
+Users Table:
 
-Because Nexus is strongly typed, all of the `t.` operations should autocomplete in your editor.
+CREATE TABLE users (
+id UUID PRIMARY KEY,
+full_name TEXT,
+avatar_url TEXT,
+billing_address JSONB,
+payment_method JSONB
+);
+Create Buckets in Storage:
 
-<details>
-  <summary>File: ./graphql/modules/organization.ts</summary>
+Navigate to the "Storage" tab in your Supabase project.
+Create two public buckets named "songs" and "images." These will be used to store uploaded songs and images.
 
-  ```ts
-  import { objectType, inputObjectType, queryField, mutationField, arg, list, nonNull } from 'nexus';
+Set Up Table Policies:
 
-  import { isAdmin } from '@/services/permissions';
+Go to the "Auth" tab in your Supabase project.
+Configure table policies as follows:
+Liked Songs Table:
 
-  // Organization Type
-  export const Organization = objectType({
-    name: 'Organization',
-    description: 'A Organization',
-    definition(t) {
-      t.nonNull.id('id');
-      t.nonNull.date('createdAt');
-      t.nonNull.date('updatedAt');
-      t.nonNull.string('name');
+RLS enabled
+Disable RLS for DELETE, Enable delete for users based on user_id
+INSERT: Enable insert for authenticated users only
+SELECT: Enable read access for all users
+Songs Table:
 
-      t.nonNull.list.nonNull.field('users', {
-        type: 'User',
-        resolve: async (parent, _, context) => {
-          return context.prisma.organization
-            .findUnique({
-              where: { id: parent.id },
-            })
-            .users();
-        },
-      });
-    },
-  });
+RLS enabled
+Disable RLS for INSERT, Enable insert for authenticated users only
+SELECT: Enable read access for all users
+Users Table:
 
-  // Queries
-  export const findOrganizationsQuery = queryField('organizations', {
-    type: list('Organization'),
-    authorize: (_root, _args, ctx) => !!ctx.user,
-    args: {
-      where: arg({ type: 'OrganizationWhereInput' }),
-      orderBy: arg({ type: 'OrganizationOrderByInput', list: true }),
-    },
-    description: 'Returns found organizations',
-    resolve: async (_root, args, ctx) => {
-      const { where = {}, orderBy = [] } = args;
+RLS enabled
+Disable RLS for UPDATE, Can update own user data.
+SELECT: Can view own user data.
+Note:
 
-      return await ctx.db.organization.findMany({ where, orderBy });
-    }
-  });
+When using the upload modal, ensure only MP3 files are accepted for songs.
+Now your Supabase project is set up and ready to be connected to the Spotify Clone!
 
-  export const findUniqueOrganizationQuery = queryField('organization', {
-    type: 'Organization',
-    description: 'Returns a specific Organization',
-    authorize: (_root, _args, ctx) => !!ctx.user,
-    args: {
-      where: nonNull(arg({ type: 'OrganizationWhereUniqueInput' }))
-    },
-    resolve: (_root, args, ctx) => {
-      const { where } = args;
-      return ctx.prisma.organization.findUnique({ where })
-    },
-  });
+Migrate your database, generate typings, and start the dev server:
 
-  // Mutations
-  export const createOrganizationMutation = mutationField('createOrganization', {
-    type: 'Organization',
-    description: 'Creates a Organization',
-    authorize: (_root, _args, ctx) => isAdmin(ctx.user),
-    args: {
-      data: nonNull(arg({ type: 'CreateOrganizationInput' })),
-    },
-    resolve: async (_root, args, ctx) => {
-      return await ctx.db.organization.create(args);
-    }
-  });
+yarn setup:dev
 
-  export const updateOrganizationMutation = mutationField('updateOrganization', {
-    type: 'Organization',
-    description: 'Updates a Organization',
-    authorize: (_root, _args, ctx) => isAdmin(ctx.user),
-    args: {
-      where: nonNull(arg({ type: 'OrganizationWhereUniqueInput'})),
-      data: nonNull(arg({ type: 'UpdateOrganizationInput' })),
-    },
-    resolve: async (_root, args, ctx) => {
-      const { where, data } = args;
+This will prep and migrate your local database, generate the Prisma client, Nexus typings, and GraphQL typings. If this fails, make sure you have Postgres running and the generated DATABASE_URL values are correct in your .env files. For more information about code generation, view the FAQ.
 
-      return await ctx.db.organization.update({ where, data });
-    }
-  });
+Run the development server:
 
-  // Mutation Inputs
-  export const CreateOrganizationInput = inputObjectType({
-    name: 'CreateOrganizationInput',
-    description: 'Input used to create a organization',
-    definition: (t) => {
-      t.nonNull.string('name');
-    },
-  });
+yarn dev
 
-  export const UpdateOrganizationInput = inputObjectType({
-    name: 'UpdateOrganizationInput',
-    description: 'Input used to update a organization',
-    definition: (t) => {
-      t.nonNull.string('name');
-    },
-  });
-
-  // Query Inputs
-  export const OrganizationOrderByInput = inputObjectType({
-    name: 'OrganizationOrderByInput',
-    description: 'Order organization by a specific field',
-    definition(t) {
-      t.field('name', { type: 'SortOrder' });
-    },
-  });
-
-  export const OrganizationWhereUniqueInput = inputObjectType({
-    name: 'OrganizationWhereUniqueInput',
-    description: 'Input to find organizations based on unique fields',
-    definition(t) {
-      t.id('id');
-      // add DB uniq fields here
-      // t.string('name');
-    },
-  });
-
-  export const OrganizationWhereInput = inputObjectType({
-    name: 'OrganizationWhereInput',
-    description: 'Input to find organizations based on other fields',
-    definition(t) {
-      t.field('name', { type: 'StringFilter' });
-    },
-  });
-  ```
-</details>
-
-### Understanding the GraphQL API and TypeScript types
-- [ ] Open `api.graphql` and look at our the new definitions that were generated for you:
-
-```graphql
-
-"""
-A Organization
-"""
-type Organization {
-  createdAt: DateTime!
-  id: ID!
-  name: String!
-  updatedAt: DateTime!
-}
-
-"""
-Order organization by a specific field
-"""
-input OrganizationOrderByInput {
-  name: SortOrder
-}
-
-"""
-Input to find organizations based on other fields
-"""
-input OrganizationWhereInput {
-  name: StringFilter
-}
-
-"""
-Input to find organizations based on unique fields
-"""
-input OrganizationWhereUniqueInput {
-  id: ID
-}
-
-"""
-Input used to create a organization
-"""
-input CreateOrganizationInput {
-  name: String!
-}
-
-"""
-Input used to update a organization
-"""
-input UpdateOrganizationInput {
-  name: String!
-}
-```
-
-- [ ] Open up `types.ts` to see the generated TypeScript types that correspond with the GraphQL changes.
-
-### API Request Tests
-Let's confirm the API changes using a request test. To do this:
-- [ ] Generate a new factory: `yarn g:test:factory organization`
-- [ ] Add a default value for organization name in the `build` function. You can use any of the methods from the [`chance` library](https://chancejs.com).
-
-```ts
-export const OrganizationFactory = {
-  build: (attrs: Partial<Prisma.OrganizationCreateInput> = {}) => {
-    return {
-      name: chance.company(), // <-- add this
-      ...attrs,
-    };
-  },
-// ...
-```
-
-- [ ] Generate a new API request test: `yarn g:test:request createOrganization`
-- [ ] Update the API request test to call the new mutation and ensure that we get an error if not logged in. If you are curious what the `Input` type should be, check `api.graphql`.
-
-Here we use inline snapshots to confirm the error message content, but you can also manually assert the content.
-
-```ts
-import { graphQLRequest, graphQLRequestAsUser, resetDB, disconnect } from '@/tests/helpers';
-import { OrganizationFactory } from '@/tests/factories/organization';
-
-beforeEach(async () => resetDB());
-afterAll(async () => disconnect());
-
-describe('createOrganization mutation', () => {
-  it('returns an error if not logged in', async () => {
-    const query = `
-    mutation createOrganization($data: OrganizationCreateInput!) {
-      createOrganization(data: $data) {
-        id
-        name
-        users {
-          email
-        }
-      }
-    }
-  `;
-
-    const variables = { data: { name: 'Cool Company' } };
-    const response = await graphQLRequest({ query, variables });
-    const errorMessages = response.body.errors.map((e) => e.message);
-
-    expect(errorMessages).toMatchInlineSnapshot(`
-        Array [
-          "Not authorized",
-        ]
-      `);
-  });
-});
-```
-
-- [ ] Add a new test to confirm that the organization user is set to the current user
-
-```ts
-it('sets the user to the logged in user', async () => {
-  const query = `
-  mutation createOrganization($data: OrganizationCreateInput!) {
-    createOrganization(data: $data) {
-      id
-      name
-      users {
-        id
-      }
-    }
-  }
-`;
-
-  const user = await UserFactory.create();
-  const variables = { data: { name: 'Cool Company', users: { connect: [{ id: 'notmyid' }] } } };
-  const response = await graphQLRequestAsUser(user, { query, variables });
-  const organization = response.body.data.createOrganization;
-  const [organizationUser] = organization.users;
-
-  expect(organizationUser.id).toEqual(user.id);
-});
-```
-
-### Add a Frontend page and form that creates an organization
-Now that we have the API finished, we can move to the frontend changes.
-
-- [ ] Create a new page to create organizations: `yarn g:page organizations/new`
-- [ ] Create an `OrganizationForm` component: `yarn g:component OrganizationForm`
-- [ ] Add a simple form with a name input. See the [React Hook Form docs](https://react-hook-form.com) for detailed information.
-
-```tsx
-import React from 'react';
-import { useForm } from 'react-hook-form';
-
-export function OrganizationForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  async function onSubmit(data) {
-    console.log(data);
-  }
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register('name', { required: true })} />
-      {errors.name && <span>This field is required</span>}
-
-      <input type="submit" />
-    </form>
-  );
-}
-```
-
-- [ ] Update the form to use Chakra components
-
-```tsx
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <FormControl id="name">
-        <FormLabel htmlFor="name">Name</FormLabel>
-        <Input type="text" {...register('name', { required: true })} isInvalid={errors.name} />
-        <ErrorText>{errors.name && errors.name.message}</ErrorText>
-      </FormControl>
-
-      <Button type="submit" marginTop={8} width="full">
-        Submit
-      </Button>
-    </form>
-  );
-}
-```
-
-- [ ] Add a GraphQL mutation to create an organization (use the same code from the API request test to keep it easy!)
-- [ ] Make sure you import `gql` from `@apollo/client` since we are working in the frontend.
-
-```tsx
-export const CREATE_ORGANIZATION_MUTATION = gql`
-  mutation createOrganization($data: OrganizationCreateInput!) {
-    createOrganization(data: $data) {
-      id
-      name
-      users {
-        id
-      }
-    }
-  }
-`;
-```
-
-- [ ] Save the file. You should see GraphQL Codegen pickup on the changes.
-- [ ] Open `types.ts`. Codegen should have created a new hook called `useCreateOrganizationMutation`, which we can use to get fully typed GraphQL operations!
-
-```tsx
-// types.ts - search for the following function:
-
-export function useCreateOrganizationMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    CreateOrganizationMutation,
-    CreateOrganizationMutationVariables
-  >
-) {
-```
-
-- [ ] Use the newly generated hook to save the results of the form:
-
-```tsx
-export function OrganizationForm() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const [createOrganization, { data, loading, error }] = useCreateOrganizationMutation();
-
-  async function onSubmit(data) {
-    createOrganization(data);
-  }
-}
-```
-
-- [ ] Attach the mutations loading state to the button loading state
-
-```tsx
-<Button type="submit" marginTop={8} width="full" isLoading={loading}>
-  Submit
-</Button>
-```
-
-You should now have a fully working form that creates a new database entry on submit!
-
-### Adding a new page that shows the organization
-
-- [ ] Generate a new page: `yarn g:page "organizations/[:id]"`. This uses the dynamic page capability of Next.js.
-- [ ] Add a new "cell" to fetch data. While not required, it keeps things clean. `yarn g:cell Organization`
-- [ ] Add a query to the cell that fetches organization data
-
-```jsx
-import React from 'react';
-import gql from 'graphql-tag';
-import { Spinner, Text } from '@chakra-ui/react';
-
-export const QUERY = gql`
-  query organization {
-    organization {
-      name
-    }
-  }
-`;
-
-export const Loading = () => <Spinner />;
-export const Error = () => <Text>Error. See dev tools.</Text>;
-export const Empty = () => <Text>No data.</Text>;
-
-export const Success = () => {
-  return <Text>Awesome!</Text>;
-};
-
-export const OrganizationCell = () => {
-  return <Empty />;
-};
-```
-
-- [ ] Verify we get an error about querying for organizations in the dev server console.
-
-```
-[WATCHERS] [GQLCODEGEN]     GraphQLDocumentError: Field "organization" argument "where" of type "OrganizationWhereUniqueInput!" is required, but it was not provided.
-```
-
-We forgot to add a where clause to our organization query that's in the cell. Let's do that now.
-
-- [ ] Open `api.graphql` to see the parameters we can pass to the organization query.
-- [ ] Copy the `where` parameter and use it in our cell.
-
-```graphql
-type Query {
-  '''
-  organization(where: OrganizationWhereUniqueInput!): Organization
-  '''
-}
-```
-
-- [ ] Update the organization query to take a parameter and use the where query
-
-```tsx
-export const QUERY = gql`
-  query organization($where: OrganizationWhereUniqueInput!) {
-    organization(where: $where) {
-      name
-    }
-  }
-`;
-```
-
-- [ ] Use the newly generated hook from `types.ts` to fetch data in the cell.
-- [ ] Add a prop to the cell for `organizationId` and pass the value to the query.
-- [ ] Udate the `Success` component to take the proper return type for the query
-- [ ] Only render the `Success` component if `data.organization` is present.
-
-```tsx
-import React from 'react';
-import gql from 'graphql-tag';
-import { Spinner, Text } from '@chakra-ui/react';
-
-import { OrganizationQuery, useOrganizationQuery } from '@/types';
-
-export const QUERY = gql`
-  query organization($where: OrganizationWhereUniqueInput!) {
-    organization(where: $where) {
-      name
-    }
-  }
-`;
-
-export const Loading = () => <Spinner />;
-export const Error = () => <Text>Error. See dev tools.</Text>;
-export const Empty = () => <Text>No data.</Text>;
-
-export const Success = ({ organization }: OrganizationQuery) => {
-  return <Text>Awesome! {organization.name}</Text>;
-};
-
-export const OrganizationCell = ({ organizationId }) => {
-  const { data, loading, error } = useOrganizationQuery({
-    variables: {
-      where: { id: organizationId },
-    },
-  });
-
-  if (loading) return <Loading />;
-  if (error) return <Error />;
-  if (data.organization) return <Success {...data} />;
-
-  return <Empty />;
-};
-```
-
-- [ ] Add the Cell to the organization page:
-
-```tsx
-import React from 'react';
-import Head from 'next/head';
-import { Flex } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
-
-import { OrganizationCell } from '@/cells/Organization';
-
-function OrganizationPage() {
-  const router = useRouter();
-  const { id } = router.query;
-
-  return (
-    <>
-      <Head>
-        <title>An organization</title>
-      </Head>
-
-      <Flex direction={{ base: 'column', lg: 'row' }}>
-        <OrganizationCell organizationId={id} />
-      </Flex>
-    </>
-  );
-}
-
-export default OrganizationPage;
-```
-
-## Congrats!
-
-Outside of e2e tests, you've used just about every feature in Bison. But don't worry. We've got your back there too.
-
-Bonus:
-
-- [ ] View the login and logout e2e tests
-
+Now you can start developing your Spotify Clone locally!

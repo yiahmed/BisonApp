@@ -10,7 +10,8 @@ import usePlayer from '@/hooks/usePlayer';
 interface MediaItemProps {
   data: Song;
   onClick: (id: string) => void;
-  setId: (id: string) => void; // Add setId prop
+  setId: (id: string) => void;
+  activeSongId: string;
 }
 
 const MediaItem: React.FC<MediaItemProps> = ({ data, onClick, activeSongId }) => {
