@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 import useLoadImage from '@/hooks/useLoadImage';
 import { Song } from '@/projectTypes';
@@ -8,24 +9,28 @@ import usePlayer from '@/hooks/usePlayer';
 
 interface MediaItemProps {
   data: Song;
-  onClick?: (id: string) => void;
+  onClick: (id: string) => void;
+  setId: (id: string) => void; // Add setId prop
 }
 
-const MediaItem: React.FC<MediaItemProps> = ({ data, onClick }) => {
-  const player = usePlayer();
+const MediaItem: React.FC<MediaItemProps> = ({ data, onClick, activeSongId }) => {
+  const { setId } = usePlayer();
   const imageUrl = useLoadImage(data);
   console.log('Data song', data);
   // const encodedUrl = encodeURIComponent(imageUrl);
   console.log('Imgae url test', imageUrl);
 
   const handleClick = () => {
-    if (onClick) {
-      return onClick(data.id);
-    }
-
-    return player.setId(data.id);
+    console.log('Clicked on SongItem:', data);
+    setId(data.id); // Call setId with the clicked song's ID
+    onClick(data.id);
   };
 
+  useEffect(() => {
+    if (activeSongId) {
+      setId(activeSongId); // Set the active song ID
+    }
+  }, [activeSongId, setId]);
   // console.log('image url', imageUrl);
 
   return (
