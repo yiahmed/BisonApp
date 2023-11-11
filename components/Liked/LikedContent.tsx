@@ -9,6 +9,7 @@ import LikeButton from '../Search/LikeButton';
 import { Song } from '@/projectTypes';
 import { useUser } from '@/hooks/useUser';
 import useOnPlay from '@/hooks/useOnPlay';
+import usePlayer from '@/hooks/usePlayer';
 
 interface LikedContentProps {
   songs: Song[];
@@ -19,6 +20,16 @@ const LikedContent: React.FC<LikedContentProps> = ({ songs }) => {
   const { isLoading, user } = useUser();
 
   const onPlay = useOnPlay(songs);
+  const { setId, setIds } = usePlayer();
+
+  useEffect(() => {
+    if (songs.length > 0) {
+      const songIds = songs.map((song) => song.id);
+      setIds(songIds); // Set the array of song IDs
+    } else {
+      console.warn('User has no songs.');
+    }
+  }, [songs, setIds]);
 
   useEffect(() => {
     if (!isLoading && !user) {

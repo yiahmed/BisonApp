@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { twMerge } from 'tailwind-merge';
 import { Box } from '@chakra-ui/react';
@@ -13,6 +13,8 @@ import useAuthModal from '@/hooks/useAuthModal';
 import { useUser } from '@/hooks/useUser';
 import useUploadModal from '@/hooks/useUploadModal';
 import { Song } from '@/projectTypes';
+import useOnPlay from '@/hooks/useOnPlay';
+import usePlayer from '@/hooks/usePlayer';
 
 interface SongLibraryProps {
   songs: Song[];
@@ -23,6 +25,17 @@ const SongLibrary: React.FC<SongLibraryProps> = ({ songs }) => {
   const authModal = useAuthModal();
   const uploadModal = useUploadModal();
   const user = useUser();
+  const onPlay = useOnPlay(songs);
+  const { setIds } = usePlayer();
+
+  useEffect(() => {
+    if (songs.length > 0) {
+      const songIds = songs.map((song) => song.id);
+      setIds(songIds); // Set the array of song IDs
+    } else {
+      console.warn('User has no songs.');
+    }
+  }, [songs, setIds]);
 
   const onClick = () => {
     if (!user) {
@@ -49,7 +62,12 @@ const SongLibrary: React.FC<SongLibraryProps> = ({ songs }) => {
         </div>
         <div className="flex flex-col px-3 mt-4 gap-y-2">
           {songs.map((item) => (
-            <MediaItem onClick={() => {}} key={item.id} data={item} />
+            <MediaItem
+              onClick={(id: string) => onPlay(id)}
+              key={item.id}
+              data={item}
+              activeSongId={onPlay.activeId}
+            />
           ))}
         </div>
       </div>
