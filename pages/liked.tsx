@@ -12,6 +12,7 @@ import getSongs from '@/actions/getSongs';
 import getSongsByUserId from '@/actions/getSongsByUserId';
 import { useUser } from '@/hooks/useUser';
 import LikedContent from '@/components/Liked/LikedContent';
+import Player from '@/components/Player/Player';
 
 type UserSessionData =
   | {
@@ -129,6 +130,7 @@ function Liked() {
           <LikedContent songs={likedSongs} />
         </div>
       </div>
+      {/* <Player /> */}
     </div>
   );
 }

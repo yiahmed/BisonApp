@@ -10,6 +10,7 @@ import SearchContent from '@/components/Search/SearchContent';
 import getSongs from '@/actions/getSongs';
 import getSongsByUserId from '@/actions/getSongsByUserId';
 import { useUser } from '@/hooks/useUser';
+import Player from '@/components/Player/Player';
 
 type UserSessionData =
   | {
@@ -110,6 +111,7 @@ function Search() {
           </div>
         </div>
       </div>
+      {/* <Player /> */}
     </div>
   );
 }

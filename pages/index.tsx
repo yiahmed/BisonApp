@@ -8,6 +8,10 @@ import MainContent from '@/components/Main/MainContent';
 import getSongs from '@/actions/getSongs';
 import getSongsByUserId from '@/actions/getSongsByUserId';
 import getLikedSongs from '@/actions/getLikedSongs';
+import Player from '@/components/Player/Player';
+import useSongById from '@/hooks/useGetSongById';
+import useLoadSongUrl from '@/hooks/useLoadSongUrl';
+import usePlayer from '@/hooks/usePlayer';
 
 type UserSessionData =
   | {
@@ -33,6 +37,7 @@ function Home({}) {
   const [songs, setSongs] = useState<Song[]>([]);
   const [userSongs, setUserSongs] = useState<Song[]>([]);
   const [likedSongs, setLikedSongs] = useState<Song[]>([]);
+  const { setId } = usePlayer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,6 +99,7 @@ function Home({}) {
         <main className="flex-1 h-full py-2 overflow-y-auto">
           <MainContent songs={songs} />
         </main>
+        {/* <Player /> */}
       </div>
     </div>
   );
