@@ -60,7 +60,7 @@ const Header = () => {
             <RxCaretLeft size={35} className="text-white" />
           </button>
           <button
-            onClick={() => router.push()}
+            onClick={() => window.history.forward()}
             className="items-center justify-center transition bg-black rounded-full -flex hover:opacity-75"
           >
             <RxCaretRight size={35} className="text-white" />
