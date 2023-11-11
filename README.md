@@ -15,6 +15,22 @@ This project is a Spotify clone built using the Full Stack Jamstack Bison app by
 
 To run the project locally, follow these steps:
 
+### NPM Setup
+
+Before running the project, you'll need to install the required dependencies using npm. Open your terminal and navigate to the project directory. Run the following command:
+
+```bash
+npm install
+```
+If you encounter any issues with peer dependencies, you can try the following command:
+
+```bash
+npm install --legacy-peer-deps
+```
+
+This command is used to install dependencies while bypassing compatibility checks for peer dependencies. In some cases, it might be necessary if your project includes packages that have not been updated to declare compatibility with the latest npm versions.
+
+
 ### Setup .env File
 
 Before running the project, you'll need to set up your `.env` file with the required environment variables. Copy the provided example below and fill in the appropriate values:
